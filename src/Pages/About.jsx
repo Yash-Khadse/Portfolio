@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useMemo } from "react"
+import React, { useEffect, useState, memo, useMemo } from "react"
 import { FileText, Code, Award, Globe, ArrowUpRight, Sparkles, UserCheck } from "lucide-react"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -113,48 +113,31 @@ const StatCard = memo(({ icon: Icon, color, value, label, description, animation
 ));
 
 const AboutPage = () => {
-  // Memoized calculations
-  const { totalProjects, totalCertificates, YearExperience } = useMemo(() => {
-    const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+  const [totalProjects, setTotalProjects] = useState(0);
+
+  // Fetch total projects from API
+  useEffect(() => {
+    fetch("https://portfolio-backend-5dvh.onrender.com/api/projects")
+      .then(res => res.json())
+      .then(data => setTotalProjects(Array.isArray(data) ? data.length : 0))
+      .catch(() => setTotalProjects(0));
+  }, []);
+
+  // Memoized calculations (remove totalProjects from here)
+  const { totalCertificates, YearExperience } = useMemo(() => {
     const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]");
-    
     const startDate = new Date("2022-09-01");
     const today = new Date();
     const experience = today.getFullYear() - startDate.getFullYear() -
       (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
 
     return {
-      totalProjects: storedProjects.length,
       totalCertificates: storedCertificates.length,
       YearExperience: experience
     };
   }, []);
 
-  // Optimized AOS initialization
-  useEffect(() => {
-    const initAOS = () => {
-      AOS.init({
-        once: false, 
-      });
-    };
-
-    initAOS();
-    
-    // Debounced resize handler
-    let resizeTimer;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(initAOS, 250);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(resizeTimer);
-    };
-  }, []);
-
-  // Memoized stats data
+  // Memoized stats data (use totalProjects from state)
   const statsData = useMemo(() => [
     {
       icon: Code,
