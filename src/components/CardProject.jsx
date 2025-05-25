@@ -45,7 +45,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
               {Description}
             </p>
             
-            <div className="pt-4 flex items-center justify-between">
+            <div className="pt-4 flex items-center justify-end">
               {ProjectLink ? (
                 <a
                 href={ProjectLink || "#"}
@@ -63,7 +63,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
               
      
 
-              {id ? (
+              {/* {id ? (
                 <Link
                   to={`/project/${id}`}
                   onClick={handleDetails}
@@ -74,7 +74,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
                 </Link>
               ) : (
                 <span className="text-gray-500 text-sm">Details Not Available</span>
-              )}
+              )} */}
             </div>
           </div>
           
